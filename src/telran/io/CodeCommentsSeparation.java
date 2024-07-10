@@ -12,7 +12,8 @@ public class CodeCommentsSeparation {
 			String line;
 			while ((line = reader.readLine()) != null) {
 				if (!line.isEmpty()) {
-					if (line.startsWith("//")) {
+					
+					if (line.trim().startsWith("//")) {
 						writer2.write(line + "\n");
 					} else {
 						writer1.write(line + "\n");

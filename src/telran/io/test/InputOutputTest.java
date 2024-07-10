@@ -69,58 +69,59 @@ class InputOutputTest {
 
 	@Test
 	void printDirectoryTest() throws IOException {
-		printDirectory(".", 4);
+		printDirectory("./src/", 6);
 	}
 
 	private void printDirectory(String dirPathStr, final int depth) throws IOException {
 		int depthValue = depth == -1 ? Integer.MAX_VALUE : depth;
 
-		
 		// print directory content in the format with offset according to the level
 		// if depth == -1 all levels should be printed out
 		// <name> - <dir / file>
 		// <name>
 		// using FIles.walkFileTree
 		Path path = Path.of(dirPathStr).toAbsolutePath().normalize();
+		try {
+			Files.walkFileTree(path, new HashSet<>(), depthValue, new FileVisitor<Path>() {
+				int offset = 0;
 
-		Files.walkFileTree(path, new HashSet<>(), depthValue, new FileVisitor<Path>() {
-			int offset = 0;
-
-			@Override
-			public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
-				printWithOffset(dir);
-				offset++;
-				return FileVisitResult.CONTINUE;
-			}
-
-			private void printWithOffset(Path path) {
-				StringBuilder indent = new StringBuilder();
-				for (int i = 0; i < offset; i++) {
-					indent.append("     ");
+				@Override
+				public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+					printWithOffset(dir);
+					offset++;
+					return FileVisitResult.CONTINUE;
 				}
-				String dirOrFile = Files.isDirectory(path) ? "directory" : "file";
-				System.out.println(indent.toString() + path.getFileName() + " - " + dirOrFile);
-			}
 
-			@Override
-			public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-				printWithOffset(file);
-				return FileVisitResult.CONTINUE;
-			}
+				private void printWithOffset(Path path) {
+					StringBuilder indent = new StringBuilder();
+					for (int i = 0; i < offset; i++) {
+						indent.append("     ");
+					}
+					String dirOrFile = Files.isDirectory(path) ? "directory" : "file";
+					System.out.println(indent.toString() + path.getFileName() + " - " + dirOrFile);
+				}
 
-			@Override
-			public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
-				System.err.println(exc);
-				return FileVisitResult.CONTINUE;
-			}
+				@Override
+				public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+					printWithOffset(file);
+					return FileVisitResult.CONTINUE;
+				}
 
-			@Override
-			public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
-				offset--;
-				return FileVisitResult.CONTINUE;
-			}
-		});
+				@Override
+				public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
+					System.err.println(exc);
+					return FileVisitResult.CONTINUE;
+				}
 
+				@Override
+				public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+					offset--;
+					return FileVisitResult.CONTINUE;
+				}
+			});
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 }
