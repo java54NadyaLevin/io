@@ -59,7 +59,7 @@ class InputOutputTest {
 	void pathTest() {
 		Path pathCurrent = Path.of(".");
 //		System.out.printf("%s - path \".\"\n",pathCurrent);
-//		System.out.printf("%s - normolized path \".\"\n", pathCurrent.normalize());
+//		System.out.printf("%s - normalized path \".\"\n", pathCurrent.normalize());
 		System.out.printf("%s - %s\n", pathCurrent.toAbsolutePath().normalize(),
 				Files.isDirectory(pathCurrent) ? "directory" : "file");
 		pathCurrent = pathCurrent.toAbsolutePath().normalize();
@@ -69,10 +69,11 @@ class InputOutputTest {
 
 	@Test
 	void printDirectoryTest() throws IOException {
-		printDirectory(".", 4);
+		printDirectory(".", -1);
 	}
 
-	private void printDirectory(String dirPathStr, int depth) throws IOException {
+	private void printDirectory(String dirPathStr, final int depth) throws IOException {
+		int depthValue = depth == -1 ? Integer.MAX_VALUE : depth;
 
 		// TODO
 		// print directory content in the format with offset according to the level
@@ -81,10 +82,10 @@ class InputOutputTest {
 		// <name>
 		// using FIles.walkFileTree
 		Path path = Path.of(dirPathStr).toAbsolutePath().normalize();
-		
-		// TODO
-		Files.walkFileTree(path, new HashSet<>(), depth, new FileVisitor<Path>() {
+
+		Files.walkFileTree(path, new HashSet<>(), depthValue, new FileVisitor<Path>() {
 			int offset = 0;
+
 			@Override
 			public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
 				printWithOffset(dir);
@@ -92,14 +93,13 @@ class InputOutputTest {
 				return FileVisitResult.CONTINUE;
 			}
 
-			  private void printWithOffset(Path path) {
-	                StringBuilder indent = new StringBuilder();
-	                for (int i = 0; i < offset; i++) {
-	                    indent.append("     "); // Adjust the spaces for indentation as needed
-	                }
-                String dirOrFile = Files.isDirectory(path) ? "directory" : "file";
-                System.out.println(indent.toString() + path.getFileName() 
-                + " - " + dirOrFile);
+			private void printWithOffset(Path path) {
+				StringBuilder indent = new StringBuilder();
+				for (int i = 0; i < offset; i++) {
+					indent.append("     ");
+				}
+				String dirOrFile = Files.isDirectory(path) ? "directory" : "file";
+				System.out.println(indent.toString() + path.getFileName() + " - " + dirOrFile);
 			}
 
 			@Override
