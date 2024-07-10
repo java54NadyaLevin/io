@@ -69,13 +69,13 @@ class InputOutputTest {
 
 	@Test
 	void printDirectoryTest() throws IOException {
-		printDirectory(".", -1);
+		printDirectory(".", 4);
 	}
 
 	private void printDirectory(String dirPathStr, final int depth) throws IOException {
 		int depthValue = depth == -1 ? Integer.MAX_VALUE : depth;
 
-		// TODO
+		
 		// print directory content in the format with offset according to the level
 		// if depth == -1 all levels should be printed out
 		// <name> - <dir / file>
