@@ -1,25 +1,23 @@
 package telran.io;
 
 import java.io.*;
+import java.util.stream.Collectors;
 
 public class CodeCommentsSeparation {
 
 	public static void main(String[] args) {
 
 		try (BufferedReader reader = new BufferedReader(new FileReader(args[0]));
-				BufferedWriter writer1 = new BufferedWriter(new FileWriter(args[1]));
-				BufferedWriter writer2 = new BufferedWriter(new FileWriter(args[2]))) {
-			String line;
-			while ((line = reader.readLine()) != null) {
-				if (!line.isEmpty()) {
-					
-					if (line.trim().startsWith("//")) {
-						writer2.write(line + "\n");
-					} else {
-						writer1.write(line + "\n");
-					}
+				PrintWriter  writer1 = new PrintWriter (new FileWriter(args[1]));
+				PrintWriter  writer2 = new PrintWriter (new FileWriter(args[2]))) {
+			reader.lines().forEach(line -> {
+				if(line.trim().startsWith("//")) {
+					writer2.println(line);
+				}else {
+					writer1.println(line);
 				}
-			}
+			});
+	
 		} catch (IOException e) {
 
 			e.printStackTrace();

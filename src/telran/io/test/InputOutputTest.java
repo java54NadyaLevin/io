@@ -18,6 +18,7 @@ class InputOutputTest {
 	private static final String STREAM_FILE = "stream-file";
 	private static final String HELLO = "Hello";
 	private static final String WRITER_FILE = "writer-file";
+	protected static final int SPACES_PER_DEPTH_LEVEL = 5;
 
 	@AfterAll
 	static void tearDown() throws IOException {
@@ -69,7 +70,7 @@ class InputOutputTest {
 
 	@Test
 	void printDirectoryTest() throws IOException {
-		printDirectory("./src/", 6);
+		printDirectory(".", 3);
 	}
 
 	private void printDirectory(String dirPathStr, final int depth) throws IOException {
@@ -93,12 +94,9 @@ class InputOutputTest {
 				}
 
 				private void printWithOffset(Path path) {
-					StringBuilder indent = new StringBuilder();
-					for (int i = 0; i < offset; i++) {
-						indent.append("     ");
-					}
+					String tab = new String(" ").repeat(offset * SPACES_PER_DEPTH_LEVEL);
 					String dirOrFile = Files.isDirectory(path) ? "directory" : "file";
-					System.out.println(indent.toString() + path.getFileName() + " - " + dirOrFile);
+					System.out.println(tab + path.getFileName() + " - " + dirOrFile);
 				}
 
 				@Override
